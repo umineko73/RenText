@@ -19,19 +19,11 @@
         },
         {
             "label": "publish",
-            "dependsOn": "build-release",
-            "dependsOrder": "sequence",
-            "command": "dotnet",
+            "command": "powershell",
             "type": "process",
             "args": [
-                "publish",
-                "${workspaceFolder}/RenText.csproj",
-                "--configuration",
-                "Release",
-                "--self-contained",
-                "true",
-                "-r",
-                "win-x64"
+                "-ExecutionPolicy", "Bypass",
+                "-File", "${workspaceFolder}/publish.ps1"
             ],
             "problemMatcher": "$msCompile"
         },
