@@ -40,9 +40,8 @@
 
 ## 動作環境
 
-インストール不要。ランタイム同梱のため .NET のインストールは不要です。
-
 - Windows 10 / 11 (x64)
+- [.NET 9 Desktop Runtime](https://dotnet.microsoft.com/download/dotnet/9.0)（x64）
 
 ---
 
@@ -119,7 +118,7 @@ dotnet run
 **配布用ビルド：**
 
 ```bash
-dotnet publish -c Release -r win-x64 -p:PublishSingleFile=true -p:SelfContained=true --output ./publish
+dotnet publish -c Release -r win-x64 --self-contained false -p:PublishSingleFile=true --output ./publish
 ```
 
 ---

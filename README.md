@@ -40,10 +40,8 @@ Instead of filling out forms or configuring rules, just edit filenames directly 
 
 ## Requirements
 
-No installation required. The package is self-contained.
-
 - Windows 10 / 11 (x64)
-- .NET runtime is **not** required
+- [.NET 9 Desktop Runtime](https://dotnet.microsoft.com/download/dotnet/9.0) (x64)
 
 ---
 
@@ -120,7 +118,7 @@ dotnet run
 **Publish as a single folder:**
 
 ```bash
-dotnet publish -c Release -r win-x64 -p:PublishSingleFile=true -p:SelfContained=true --output ./publish
+dotnet publish -c Release -r win-x64 --self-contained false -p:PublishSingleFile=true --output ./publish
 ```
 
 ---
