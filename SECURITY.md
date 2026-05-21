@@ -15,7 +15,7 @@ Please **do not** report security vulnerabilities through public GitHub Issues.
 
 Instead, contact the maintainer directly:
 
-📧 **uminekoz@icloud.com**
+📧 **93172542+umineko73@users.noreply.github.com**
 
 Include as much detail as possible:
 - Description of the vulnerability
