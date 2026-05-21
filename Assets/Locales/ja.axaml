@@ -4,8 +4,8 @@
 
     <!-- Address bar -->
     <sys:String x:Key="AddrBar_Placeholder">フォルダーパスを入力して Enter</sys:String>
-    <sys:String x:Key="Btn_Browse">参照</sys:String>
-    <sys:String x:Key="Btn_Navigate">移動</sys:String>
+    <sys:String x:Key="Btn_Browse">📂 参照</sys:String>
+    <sys:String x:Key="Btn_Navigate">→ 移動</sys:String>
 
     <!-- Search &amp; replace panel -->
     <sys:String x:Key="Search_Label">検索:</sys:String>
@@ -21,9 +21,9 @@
     <sys:String x:Key="Pane_Preview">プレビュー</sys:String>
 
     <!-- Status bar -->
-    <sys:String x:Key="Btn_Save">保存 (Ctrl+S)</sys:String>
-    <sys:String x:Key="Btn_Reset">すべてリセット</sys:String>
-    <sys:String x:Key="Btn_SearchReplace">検索と置換 (Ctrl+H)</sys:String>
+    <sys:String x:Key="Btn_Save">💾 保存 (Ctrl+S)</sys:String>
+    <sys:String x:Key="Btn_Reset">↩ すべてリセット</sys:String>
+    <sys:String x:Key="Btn_SearchReplace">🔎 検索と置換 (Ctrl+H)</sys:String>
     <sys:String x:Key="Chk_ShowHidden">隠し/システムを表示</sys:String>
     <sys:String x:Key="Label_DisplayFormat">表示:</sys:String>
 
@@ -56,7 +56,7 @@
     <sys:String x:Key="Tooltip_ReadOnly">読み取り専用ファイル (リネーム不可)</sys:String>
 
     <!-- File list placeholder -->
-    <sys:String x:Key="Empty_NoFolder">左のツリーまたはアドレスバーでフォルダーを選択してください</sys:String>
+    <sys:String x:Key="Empty_NoFolder">📂 左のツリーまたはアドレスバーでフォルダーを選択してください</sys:String>
     <sys:String x:Key="Empty_NoFiles">このフォルダーにファイルはありません</sys:String>
 
     <!-- Dialog -->

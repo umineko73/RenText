@@ -19,6 +19,8 @@
         },
         {
             "label": "publish",
+            "dependsOn": "build-release",
+            "dependsOrder": "sequence",
             "command": "dotnet",
             "type": "process",
             "args": [
@@ -30,6 +32,18 @@
                 "true",
                 "-r",
                 "win-x64"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "build-release",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "build",
+                "${workspaceFolder}/RenText.csproj",
+                "--configuration",
+                "Release"
             ],
             "problemMatcher": "$msCompile"
         }

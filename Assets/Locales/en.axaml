@@ -4,8 +4,8 @@
 
     <!-- Address bar -->
     <sys:String x:Key="AddrBar_Placeholder">Enter folder path and press Enter</sys:String>
-    <sys:String x:Key="Btn_Browse">Browse</sys:String>
-    <sys:String x:Key="Btn_Navigate">Go</sys:String>
+    <sys:String x:Key="Btn_Browse">📂 Browse</sys:String>
+    <sys:String x:Key="Btn_Navigate">→ Go</sys:String>
 
     <!-- Search &amp; replace panel -->
     <sys:String x:Key="Search_Label">Search:</sys:String>
@@ -21,9 +21,9 @@
     <sys:String x:Key="Pane_Preview">Preview</sys:String>
 
     <!-- Status bar -->
-    <sys:String x:Key="Btn_Save">Save (Ctrl+S)</sys:String>
-    <sys:String x:Key="Btn_Reset">Reset All</sys:String>
-    <sys:String x:Key="Btn_SearchReplace">Search &amp; Replace (Ctrl+H)</sys:String>
+    <sys:String x:Key="Btn_Save">💾 Save (Ctrl+S)</sys:String>
+    <sys:String x:Key="Btn_Reset">↩ Reset All</sys:String>
+    <sys:String x:Key="Btn_SearchReplace">🔎 Search &amp; Replace (Ctrl+H)</sys:String>
     <sys:String x:Key="Chk_ShowHidden">Show hidden/system</sys:String>
     <sys:String x:Key="Label_DisplayFormat">Display:</sys:String>
 
@@ -56,7 +56,7 @@
     <sys:String x:Key="Tooltip_ReadOnly">Read-only file (cannot rename)</sys:String>
 
     <!-- File list placeholder -->
-    <sys:String x:Key="Empty_NoFolder">Select a folder from the tree or address bar</sys:String>
+    <sys:String x:Key="Empty_NoFolder">📂 Select a folder from the tree or address bar</sys:String>
     <sys:String x:Key="Empty_NoFiles">No files in this folder</sys:String>
 
     <!-- Dialog -->
