@@ -1,0 +1,431 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:RenText.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="1200" d:DesignHeight="700"
+        x:Class="RenText.Views.MainWindow"
+        x:DataType="vm:MainWindowViewModel"
+        Title="RenText"
+        Icon="/Assets/rentext.ico"
+        MinWidth="800" MinHeight="500"
+        Width="1200" Height="700">
+
+    <Window.Styles>
+        <Style Selector="TextBox.editor-line">
+            <Setter Property="FontFamily" Value="Consolas,Menlo,monospace"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Padding" Value="8,2"/>
+            <Setter Property="CornerRadius" Value="0"/>
+            <Setter Property="MinHeight" Value="0"/>
+            <Setter Property="Foreground" Value="{DynamicResource AppEditorFg}"/>
+        </Style>
+        <Style Selector="TextBox.editor-line:focus">
+            <Setter Property="Background" Value="{DynamicResource AppEditorFocusBg}"/>
+        </Style>
+        <Style Selector="TextBox.modified">
+            <Setter Property="Foreground" Value="{DynamicResource AppEditorModifiedFg}"/>
+        </Style>
+        <Style Selector="TextBox.has-error">
+            <Setter Property="Foreground" Value="#F44747"/>
+        </Style>
+        <Style Selector="TextBox.is-readonly">
+            <Setter Property="Foreground" Value="{DynamicResource AppEditorReadOnlyFg}"/>
+            <Setter Property="Background" Value="{DynamicResource AppEditorReadOnlyBg}"/>
+            <Setter Property="Cursor"     Value="Arrow"/>
+        </Style>
+        <Style Selector="TextBox.is-readonly:focus">
+            <Setter Property="Background" Value="{DynamicResource AppEditorReadOnlyBg}"/>
+        </Style>
+        <Style Selector="Button.toolbar">
+            <Setter Property="Padding" Value="8,4"/>
+            <Setter Property="Margin" Value="2,0"/>
+            <Setter Property="FontSize" Value="12"/>
+        </Style>
+        <Style Selector="TreeViewItem">
+            <Setter Property="Foreground" Value="{DynamicResource AppLabelFg}"/>
+            <Setter Property="FontSize" Value="12"/>
+        </Style>
+        <Style Selector="TextBlock.preview-result">
+            <Setter Property="Foreground" Value="{DynamicResource AppPreviewResultFg}"/>
+        </Style>
+        <Style Selector="TextBlock.preview-result.has-regex-preview">
+            <Setter Property="Foreground" Value="{DynamicResource AppPreviewRegexFg}"/>
+        </Style>
+    </Window.Styles>
+
+    <Grid RowDefinitions="Auto,Auto,*,Auto">
+
+        <!-- ===== アドレスバー ===== -->
+        <Border Grid.Row="0" Background="{DynamicResource AppAddressBarBg}" Padding="6,4">
+            <Grid ColumnDefinitions="*,Auto,Auto,Auto,Auto">
+                <TextBox Grid.Column="0"
+                         Text="{Binding CurrentPath}"
+                         FontFamily="Consolas,monospace"
+                         FontSize="13"
+                         PlaceholderText="{DynamicResource AddrBar_Placeholder}"
+                         Padding="6,4"
+                         VerticalContentAlignment="Center">
+                    <TextBox.KeyBindings>
+                        <KeyBinding Gesture="Return" Command="{Binding NavigateToCommand}"/>
+                    </TextBox.KeyBindings>
+                </TextBox>
+                <Button Grid.Column="1"
+                        Content="{DynamicResource Btn_Browse}"
+                        Command="{Binding SelectFolderCommand}"
+                        Classes="toolbar" Margin="4,0,2,0"/>
+                <Button Grid.Column="2"
+                        Content="{DynamicResource Btn_Navigate}"
+                        Command="{Binding NavigateToCommand}"
+                        Classes="toolbar"/>
+                <Button Grid.Column="3"
+                        Content="{Binding ThemeIcon}"
+                        Command="{Binding ToggleThemeCommand}"
+                        Classes="toolbar" Margin="4,0,2,0"
+                        FontSize="14"/>
+                <Button Grid.Column="4"
+                        Content="{Binding LanguageLabel}"
+                        Command="{Binding ToggleLanguageCommand}"
+                        Classes="toolbar"
+                        FontSize="12" FontWeight="SemiBold"/>
+            </Grid>
+        </Border>
+
+        <!-- ===== 検索置換パネル（VS Code スタイル） ===== -->
+        <Border Grid.Row="1"
+                IsVisible="{Binding IsSearchPanelVisible}"
+                Background="{DynamicResource AppSearchPanelBg}"
+                BorderBrush="{DynamicResource AppSearchBorderBg}"
+                BorderThickness="0,0,0,1"
+                Padding="8,6">
+            <Grid ColumnDefinitions="Auto,180,Auto,180,Auto,Auto,Auto,Auto">
+                <TextBlock Grid.Column="0"
+                           Text="{DynamicResource Search_Label}"
+                           Foreground="{DynamicResource AppLabelFg}"
+                           VerticalAlignment="Center" Margin="0,0,6,0" FontSize="12"/>
+                <TextBox Grid.Column="1" Text="{Binding SearchText}"
+                         FontFamily="Consolas,monospace" FontSize="12"
+                         PlaceholderText="{DynamicResource Search_Placeholder}"
+                         Padding="4,2" Margin="0,0,8,0">
+                    <TextBox.KeyBindings>
+                        <KeyBinding Gesture="Return" Command="{Binding ReplaceAllCommand}"/>
+                    </TextBox.KeyBindings>
+                </TextBox>
+                <TextBlock Grid.Column="2"
+                           Text="{DynamicResource Replace_Label}"
+                           Foreground="{DynamicResource AppLabelFg}"
+                           VerticalAlignment="Center" Margin="0,0,6,0" FontSize="12"/>
+                <TextBox Grid.Column="3" Text="{Binding ReplaceText}"
+                         FontFamily="Consolas,monospace" FontSize="12"
+                         PlaceholderText="{DynamicResource Replace_Placeholder}"
+                         Padding="4,2" Margin="0,0,8,0">
+                    <TextBox.KeyBindings>
+                        <KeyBinding Gesture="Return" Command="{Binding ReplaceAllCommand}"/>
+                    </TextBox.KeyBindings>
+                </TextBox>
+                <CheckBox Grid.Column="4"
+                          Content="{DynamicResource Chk_Regex}"
+                          IsChecked="{Binding UseRegex}"
+                          Foreground="{DynamicResource AppLabelFg}" FontSize="12" Margin="0,0,8,0"/>
+                <CheckBox Grid.Column="5"
+                          Content="{DynamicResource Chk_CaseSensitive}"
+                          IsChecked="{Binding IsCaseSensitive}"
+                          Foreground="{DynamicResource AppLabelFg}" FontSize="12" Margin="0,0,8,0"/>
+                <Button Grid.Column="6"
+                        Content="{DynamicResource Btn_ReplaceAll}"
+                        Command="{Binding ReplaceAllCommand}"
+                        Classes="toolbar"/>
+                <Button Grid.Column="7" Content="✕"
+                        Command="{Binding ToggleSearchPanelCommand}"
+                        Classes="toolbar"/>
+            </Grid>
+        </Border>
+
+        <!-- ===== メインコンテンツ（3ペイン） ===== -->
+        <Panel Grid.Row="2">
+        <Grid ColumnDefinitions="220,4,*,4,320">
+
+            <!-- フォルダツリー -->
+            <Border Grid.Column="0" Background="{DynamicResource AppTreeBg}"
+                    BorderBrush="{DynamicResource AppBorderBrush}" BorderThickness="0,0,1,0">
+                <TreeView x:Name="FolderTreeView"
+                          ItemsSource="{Binding FolderTree}"
+                          Background="Transparent"
+                          SelectionMode="Single"
+                          ScrollViewer.HorizontalScrollBarVisibility="Auto">
+                    <TreeView.ItemContainerTheme>
+                        <ControlTheme TargetType="TreeViewItem"
+                                      BasedOn="{StaticResource {x:Type TreeViewItem}}">
+                            <Setter Property="IsExpanded" Value="{ReflectionBinding IsExpanded, Mode=TwoWay}"/>
+                            <Setter Property="IsSelected" Value="{ReflectionBinding IsSelected, Mode=TwoWay}"/>
+                        </ControlTheme>
+                    </TreeView.ItemContainerTheme>
+                    <TreeView.ItemTemplate>
+                        <TreeDataTemplate x:DataType="vm:FolderTreeItemViewModel"
+                                          ItemsSource="{Binding Children}">
+                            <StackPanel Orientation="Horizontal" Spacing="4">
+                                <!-- Foreground を固定して TreeViewItem の状態変化（Selected/PointerOver等）が
+                                     絵文字の描画に伝播しないようにする -->
+                                <TextBlock Text="{Binding Icon}"
+                                           FontSize="13"
+                                           FontFamily="Segoe UI Emoji"
+                                           Foreground="#E2C275"/>
+                                <TextBlock Text="{Binding Name}"
+                                           VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </TreeDataTemplate>
+                    </TreeView.ItemTemplate>
+                </TreeView>
+            </Border>
+
+            <GridSplitter Grid.Column="1" Background="{DynamicResource AppSeparatorBg}"
+                          ResizeDirection="Columns" ResizeBehavior="PreviousAndNext"/>
+
+            <!-- 編集ペイン -->
+            <Border Grid.Column="2" Background="{DynamicResource AppEditorBg}">
+                <Grid RowDefinitions="Auto,*">
+                    <Border Grid.Row="0" Background="{DynamicResource AppHeaderBg}" Padding="4,2"
+                            BorderBrush="{DynamicResource AppBorderBrush}" BorderThickness="0,0,0,1">
+                        <StackPanel Orientation="Horizontal" Spacing="2">
+                            <TextBlock Text="{DynamicResource Pane_Edit}"
+                                       Foreground="{DynamicResource AppAccentFg}"
+                                       FontSize="11" FontWeight="SemiBold"
+                                       VerticalAlignment="Center" Margin="4,0,8,0"/>
+                            <Button Content="{Binding SortNameLabel}"
+                                    Command="{Binding SortByNameCommand}"
+                                    FontSize="11" Padding="6,2"/>
+                            <Button Content="{Binding SortDateLabel}"
+                                    Command="{Binding SortByDateCommand}"
+                                    FontSize="11" Padding="6,2"/>
+                            <Button Content="{Binding SortExtLabel}"
+                                    Command="{Binding SortByExtensionCommand}"
+                                    FontSize="11" Padding="6,2"/>
+                            <Button Content="{Binding SortSizeLabel}"
+                                    Command="{Binding SortBySizeCommand}"
+                                    FontSize="11" Padding="6,2"/>
+                        </StackPanel>
+                    </Border>
+
+                    <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Auto"
+                                  x:Name="EditScrollViewer">
+                        <ItemsControl x:Name="FileListControl"
+                                      ItemsSource="{Binding FileLines}"
+                                      Background="Transparent">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate x:DataType="vm:FileLineViewModel">
+                                    <Grid ColumnDefinitions="3,Auto,*">
+                                        <!-- エラー時: 赤帯 / 読み取り専用時: グレー帯 -->
+                                        <Rectangle Grid.Column="0"
+                                                   Fill="#F44747"
+                                                   IsVisible="{Binding HasError}"/>
+                                        <Rectangle Grid.Column="0"
+                                                   Fill="#606060"
+                                                   IsVisible="{Binding IsReadOnly}"/>
+                                        <TextBlock Grid.Column="1"
+                                                   Text="{Binding PrefixText}"
+                                                   IsVisible="{Binding HasPrefix}"
+                                                   Width="{Binding PrefixWidth}"
+                                                   TextAlignment="Right"
+                                                   FontFamily="Consolas,monospace"
+                                                   FontSize="13"
+                                                   Foreground="#808080"
+                                                   VerticalAlignment="Center"
+                                                   Margin="8,0,8,0"/>
+                                        <TextBox Grid.Column="2"
+                                                 Text="{Binding EditedName}"
+                                                 IsReadOnly="{Binding IsReadOnly}"
+                                                 Classes="editor-line"
+                                                 Classes.modified="{Binding IsModified}"
+                                                 Classes.has-error="{Binding HasError}"
+                                                 Classes.is-readonly="{Binding IsReadOnly}"
+                                                 ToolTip.Tip="{Binding TooltipMessage}"/>
+                                    </Grid>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+
+                    <!-- 未選択・空フォルダ時のプレースホルダー -->
+                    <TextBlock Grid.Row="1"
+                               Text="{Binding EmptyListMessage}"
+                               IsVisible="{Binding ShowEmptyPlaceholder}"
+                               IsHitTestVisible="False"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               TextAlignment="Center"
+                               TextWrapping="Wrap"
+                               MaxWidth="360"
+                               FontSize="13"
+                               Foreground="#808080"/>
+
+                    <!-- 保存成功トースト（1秒表示） -->
+                    <Border Grid.Row="1"
+                            IsVisible="{Binding ShowSuccessMessage}"
+                            IsHitTestVisible="False"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Padding="16,12"
+                            CornerRadius="4"
+                            Background="#334EC9B0"
+                            BorderBrush="#4EC9B0"
+                            BorderThickness="1">
+                        <StackPanel Orientation="Horizontal" Spacing="10">
+                            <TextBlock Text="✓"
+                                       FontSize="20"
+                                       FontWeight="Bold"
+                                       Foreground="#4EC9B0"
+                                       VerticalAlignment="Center"/>
+                            <TextBlock Text="{DynamicResource Status_Saved}"
+                                       FontSize="13"
+                                       Foreground="#4EC9B0"
+                                       VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- フォルダ全体に関わるエラー（アクセス拒否・パス無効など） -->
+                    <Border Grid.Row="1"
+                            IsVisible="{Binding ShowErrorMessage}"
+                            IsHitTestVisible="False"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            MaxWidth="520"
+                            Padding="16,12"
+                            CornerRadius="4"
+                            Background="#33F44747"
+                            BorderBrush="#F44747"
+                            BorderThickness="1">
+                        <StackPanel Orientation="Horizontal" Spacing="10">
+                            <TextBlock Text="⚠"
+                                       FontSize="20"
+                                       Foreground="#F44747"
+                                       VerticalAlignment="Center"/>
+                            <TextBlock Text="{Binding StatusMessage}"
+                                       TextWrapping="Wrap"
+                                       MaxWidth="440"
+                                       FontSize="13"
+                                       Foreground="#F44747"
+                                       VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+            </Border>
+
+            <GridSplitter Grid.Column="3" Background="{DynamicResource AppSeparatorBg}"
+                          ResizeDirection="Columns" ResizeBehavior="PreviousAndNext"/>
+
+            <!-- プレビューペイン -->
+            <Border Grid.Column="4" Background="{DynamicResource AppEditorBg}">
+                <Grid RowDefinitions="Auto,*">
+                    <Border Grid.Row="0" Background="{DynamicResource AppHeaderBg}" Padding="8,4"
+                            BorderBrush="{DynamicResource AppBorderBrush}" BorderThickness="0,0,0,1">
+                        <TextBlock Text="{DynamicResource Pane_Preview}"
+                                   Foreground="{DynamicResource AppAccentFg}"
+                                   FontSize="11" FontWeight="SemiBold"/>
+                    </Border>
+
+                    <ScrollViewer Grid.Row="1">
+                        <ItemsControl ItemsSource="{Binding FileLines}"
+                                      Background="Transparent">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate x:DataType="vm:FileLineViewModel">
+                                    <Border IsVisible="{Binding ShowInPreview}"
+                                            Padding="8,3">
+                                        <StackPanel>
+                                            <TextBlock Text="{Binding ErrorMessage}"
+                                                       Foreground="#F44747"
+                                                       FontSize="11"
+                                                       IsVisible="{Binding HasError}"
+                                                       Margin="0,0,0,1"/>
+                                            <TextBlock FontFamily="Consolas,monospace"
+                                                       FontSize="12"
+                                                       Foreground="#808080"
+                                                       Text="{Binding Source.OriginalName}"/>
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="  → "
+                                                           Foreground="#569CD6"
+                                                           FontFamily="Consolas,monospace"
+                                                           FontSize="12"/>
+                                                <TextBlock FontFamily="Consolas,monospace"
+                                                           FontSize="12"
+                                                           Classes="preview-result"
+                                                           Classes.has-regex-preview="{Binding HasPreview}"
+                                                           Text="{Binding PreviewResult}"/>
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+                </Grid>
+            </Border>
+        </Grid>
+
+        <!-- ローディングオーバーレイ -->
+        <Border IsVisible="{Binding IsLoading}"
+                Background="#A0000000">
+            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="14">
+                <ProgressBar IsIndeterminate="True"
+                             Width="220" Height="4"
+                             Foreground="#4EC9B0"/>
+                <TextBlock Text="{DynamicResource Status_Loading}"
+                           Foreground="White"
+                           FontSize="13"
+                           FontFamily="Consolas,monospace"
+                           HorizontalAlignment="Center"/>
+            </StackPanel>
+        </Border>
+        </Panel>
+
+        <!-- ===== ステータスバー ===== -->
+        <Border Grid.Row="3" Background="{DynamicResource AppStatusBarBg}" Padding="6,4">
+            <Grid ColumnDefinitions="Auto,Auto,Auto,*,Auto,Auto,Auto,Auto">
+                <Button Grid.Column="0"
+                        Content="{DynamicResource Btn_Save}"
+                        Command="{Binding SaveCommand}"
+                        Classes="toolbar"/>
+                <Button Grid.Column="1"
+                        Content="{DynamicResource Btn_Reset}"
+                        Command="{Binding ResetAllCommand}"
+                        Classes="toolbar"/>
+                <Button Grid.Column="2"
+                        Content="{DynamicResource Btn_SearchReplace}"
+                        Command="{Binding ToggleSearchPanelCommand}"
+                        Classes="toolbar"/>
+
+                <TextBlock Grid.Column="3"
+                           Text="{Binding StatusMessage}"
+                           Foreground="{DynamicResource AppStatusBarFg}"
+                           FontSize="12"
+                           VerticalAlignment="Center"
+                           Margin="12,0"/>
+
+                <CheckBox Grid.Column="4"
+                          Content="{DynamicResource Chk_ShowHidden}"
+                          IsChecked="{Binding ShowHiddenItems}"
+                          Foreground="{DynamicResource AppStatusBarFg}"
+                          FontSize="12"
+                          VerticalAlignment="Center"
+                          Margin="0,0,12,0"/>
+                <TextBlock Grid.Column="5"
+                           Text="{DynamicResource Label_DisplayFormat}"
+                           Foreground="{DynamicResource AppStatusBarFg}"
+                           FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                <ComboBox Grid.Column="6"
+                          ItemsSource="{Binding DisplayFormatItems}"
+                          SelectedIndex="{Binding SelectedDisplayFormatIndex}"
+                          FontSize="12" MinWidth="130"/>
+                <TextBlock Grid.Column="7"
+                           Text="{Binding CursorLineText}"
+                           IsVisible="{Binding HasCursorLine}"
+                           Foreground="{DynamicResource AppStatusBarFg}"
+                           FontFamily="Consolas,monospace"
+                           FontSize="12"
+                           VerticalAlignment="Center"
+                           Margin="12,0,4,0"/>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>

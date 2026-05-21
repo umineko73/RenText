@@ -1,0 +1,76 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:sys="clr-namespace:System;assembly=System.Runtime">
+
+    <!-- Address bar -->
+    <sys:String x:Key="AddrBar_Placeholder">Enter folder path and press Enter</sys:String>
+    <sys:String x:Key="Btn_Browse">📂 Browse</sys:String>
+    <sys:String x:Key="Btn_Navigate">→ Go</sys:String>
+
+    <!-- Search & replace panel -->
+    <sys:String x:Key="Search_Label">Search:</sys:String>
+    <sys:String x:Key="Replace_Label">Replace:</sys:String>
+    <sys:String x:Key="Search_Placeholder">Search text</sys:String>
+    <sys:String x:Key="Replace_Placeholder">Replace text</sys:String>
+    <sys:String x:Key="Chk_Regex">Regex</sys:String>
+    <sys:String x:Key="Chk_CaseSensitive">Case sensitive</sys:String>
+    <sys:String x:Key="Btn_ReplaceAll">Replace All</sys:String>
+
+    <!-- Pane headers -->
+    <sys:String x:Key="Pane_Edit">Edit</sys:String>
+    <sys:String x:Key="Pane_Preview">Preview</sys:String>
+
+    <!-- Status bar -->
+    <sys:String x:Key="Btn_Save">💾 Save (Ctrl+S)</sys:String>
+    <sys:String x:Key="Btn_Reset">↩ Reset All</sys:String>
+    <sys:String x:Key="Btn_SearchReplace">🔍 Search &amp; Replace (Ctrl+H)</sys:String>
+    <sys:String x:Key="Chk_ShowHidden">Show hidden/system</sys:String>
+    <sys:String x:Key="Label_DisplayFormat">Display:</sys:String>
+
+    <!-- Display format items -->
+    <sys:String x:Key="DisplayFormat_NameOnly">Name only</sys:String>
+    <sys:String x:Key="DisplayFormat_WithDate">With date</sys:String>
+    <sys:String x:Key="DisplayFormat_WithSize">With size</sys:String>
+    <sys:String x:Key="DisplayFormat_WithDateAndSize">Date + size</sys:String>
+
+    <!-- Sort labels -->
+    <sys:String x:Key="Sort_Name">Name</sys:String>
+    <sys:String x:Key="Sort_Date">Date</sys:String>
+    <sys:String x:Key="Sort_Ext">Ext</sys:String>
+    <sys:String x:Key="Sort_Size">Size</sys:String>
+
+    <!-- Status messages -->
+    <sys:String x:Key="Status_SelectFolder">Select a folder</sys:String>
+    <sys:String x:Key="Status_Loading">Loading...</sys:String>
+    <sys:String x:Key="Status_FileCount">{0} files  |  {1}</sys:String>
+    <sys:String x:Key="Status_Saved">Saved</sys:String>
+    <sys:String x:Key="Status_Reset">Changes reverted</sys:String>
+    <sys:String x:Key="Status_NoMatch">No matches</sys:String>
+    <sys:String x:Key="Status_Replaced">Replaced {0} items</sys:String>
+    <sys:String x:Key="Status_Error">Error: {0}</sys:String>
+    <sys:String x:Key="Status_FolderNotFound">Folder not found: {0}</sys:String>
+    <sys:String x:Key="Status_RegexError">Regex error: {0}</sys:String>
+    <sys:String x:Key="Status_AccessDenied">Cannot access folder: {0}</sys:String>
+    <sys:String x:Key="Status_ReadFailed">Could not read folder: {0}</sys:String>
+    <sys:String x:Key="Status_WatchPaused">Auto-refresh paused (unsaved edits)</sys:String>
+    <sys:String x:Key="Tooltip_ReadOnly">Read-only file (cannot rename)</sys:String>
+
+    <!-- File list placeholder -->
+    <sys:String x:Key="Empty_NoFolder">📂 Select a folder from the tree or address bar</sys:String>
+    <sys:String x:Key="Empty_NoFiles">No files in this folder</sys:String>
+
+    <!-- Dialog -->
+    <sys:String x:Key="Dialog_SelectFolder">Select Folder</sys:String>
+
+    <!-- Rename validation errors -->
+    <sys:String x:Key="Err_CountMismatch">File count mismatch</sys:String>
+    <sys:String x:Key="Err_EmptyName">Line {0}: File name is empty</sys:String>
+    <sys:String x:Key="Err_InvalidChars">Line {0}: Contains invalid characters: {1}</sys:String>
+    <sys:String x:Key="Err_Duplicate">Line {0}: Duplicate file name: {1}</sys:String>
+    <sys:String x:Key="Err_AlreadyExists">Line {0}: File already exists: {1}</sys:String>
+    <sys:String x:Key="Err_TrailingDotOrSpace">Line {0}: Ends with a dot or space: {1}</sys:String>
+    <sys:String x:Key="Err_ReservedName">Line {0}: Windows reserved name cannot be used: {1}</sys:String>
+    <sys:String x:Key="Err_PathTooLong">Line {0}: Full path is too long ({1} chars / limit {2})</sys:String>
+    <sys:String x:Key="Err_RenameFailed">An error occurred during rename. Changes have been rolled back.&#x0A;{0}</sys:String>
+
+</ResourceDictionary>

@@ -1,0 +1,76 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:sys="clr-namespace:System;assembly=System.Runtime">
+
+    <!-- アドレスバー -->
+    <sys:String x:Key="AddrBar_Placeholder">フォルダパスを入力して Enter</sys:String>
+    <sys:String x:Key="Btn_Browse">📂 参照</sys:String>
+    <sys:String x:Key="Btn_Navigate">→ 移動</sys:String>
+
+    <!-- 検索置換パネル -->
+    <sys:String x:Key="Search_Label">検索:</sys:String>
+    <sys:String x:Key="Replace_Label">置換:</sys:String>
+    <sys:String x:Key="Search_Placeholder">検索テキスト</sys:String>
+    <sys:String x:Key="Replace_Placeholder">置換テキスト</sys:String>
+    <sys:String x:Key="Chk_Regex">正規表現</sys:String>
+    <sys:String x:Key="Chk_CaseSensitive">大文字小文字</sys:String>
+    <sys:String x:Key="Btn_ReplaceAll">すべて置換</sys:String>
+
+    <!-- ペインヘッダー -->
+    <sys:String x:Key="Pane_Edit">編集</sys:String>
+    <sys:String x:Key="Pane_Preview">プレビュー</sys:String>
+
+    <!-- ステータスバー -->
+    <sys:String x:Key="Btn_Save">💾 保存 (Ctrl+S)</sys:String>
+    <sys:String x:Key="Btn_Reset">↩ 元に戻す</sys:String>
+    <sys:String x:Key="Btn_SearchReplace">🔍 検索置換 (Ctrl+H)</sys:String>
+    <sys:String x:Key="Chk_ShowHidden">隠し/システムを表示</sys:String>
+    <sys:String x:Key="Label_DisplayFormat">表示形式:</sys:String>
+
+    <!-- 表示形式 -->
+    <sys:String x:Key="DisplayFormat_NameOnly">ファイル名のみ</sys:String>
+    <sys:String x:Key="DisplayFormat_WithDate">更新日時付き</sys:String>
+    <sys:String x:Key="DisplayFormat_WithSize">サイズ付き</sys:String>
+    <sys:String x:Key="DisplayFormat_WithDateAndSize">日時＋サイズ</sys:String>
+
+    <!-- ソートラベル -->
+    <sys:String x:Key="Sort_Name">名前</sys:String>
+    <sys:String x:Key="Sort_Date">日付</sys:String>
+    <sys:String x:Key="Sort_Ext">拡張子</sys:String>
+    <sys:String x:Key="Sort_Size">サイズ</sys:String>
+
+    <!-- ステータスメッセージ -->
+    <sys:String x:Key="Status_SelectFolder">フォルダを選択してください</sys:String>
+    <sys:String x:Key="Status_Loading">読み込み中...</sys:String>
+    <sys:String x:Key="Status_FileCount">{0} ファイル  |  {1}</sys:String>
+    <sys:String x:Key="Status_Saved">保存しました</sys:String>
+    <sys:String x:Key="Status_Reset">変更を元に戻しました</sys:String>
+    <sys:String x:Key="Status_NoMatch">一致なし</sys:String>
+    <sys:String x:Key="Status_Replaced">{0} 件を置換しました</sys:String>
+    <sys:String x:Key="Status_Error">エラー: {0}</sys:String>
+    <sys:String x:Key="Status_FolderNotFound">フォルダが見つかりません: {0}</sys:String>
+    <sys:String x:Key="Status_RegexError">正規表現エラー: {0}</sys:String>
+    <sys:String x:Key="Status_AccessDenied">フォルダにアクセスできません: {0}</sys:String>
+    <sys:String x:Key="Status_ReadFailed">フォルダを読み込めません: {0}</sys:String>
+    <sys:String x:Key="Status_WatchPaused">編集中のため自動更新を停止しています</sys:String>
+    <sys:String x:Key="Tooltip_ReadOnly">読み取り専用ファイル（リネーム不可）</sys:String>
+
+    <!-- 一覧プレースホルダー -->
+    <sys:String x:Key="Empty_NoFolder">📂 左のツリーまたはアドレスバーでフォルダを選択してください</sys:String>
+    <sys:String x:Key="Empty_NoFiles">このフォルダにファイルはありません</sys:String>
+
+    <!-- ダイアログ -->
+    <sys:String x:Key="Dialog_SelectFolder">フォルダを選択</sys:String>
+
+    <!-- リネーム検証エラー -->
+    <sys:String x:Key="Err_CountMismatch">ファイル数が一致しません</sys:String>
+    <sys:String x:Key="Err_EmptyName">行 {0}: ファイル名が空です</sys:String>
+    <sys:String x:Key="Err_InvalidChars">行 {0}: 使用できない文字が含まれています: {1}</sys:String>
+    <sys:String x:Key="Err_Duplicate">行 {0}: 重複するファイル名: {1}</sys:String>
+    <sys:String x:Key="Err_AlreadyExists">行 {0}: ファイルが既に存在します: {1}</sys:String>
+    <sys:String x:Key="Err_TrailingDotOrSpace">行 {0}: ピリオドまたは空白で終わっています: {1}</sys:String>
+    <sys:String x:Key="Err_ReservedName">行 {0}: Windows 予約名は使えません: {1}</sys:String>
+    <sys:String x:Key="Err_PathTooLong">行 {0}: パス全体が長すぎます ({1} 文字 / 上限 {2})</sys:String>
+    <sys:String x:Key="Err_RenameFailed">リネーム中にエラーが発生しました。変更は元に戻されました。&#x0A;{0}</sys:String>
+
+</ResourceDictionary>

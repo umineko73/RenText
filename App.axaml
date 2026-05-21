@@ -1,0 +1,67 @@
+<Application xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="RenText.App"
+             xmlns:local="using:RenText"
+             RequestedThemeVariant="Dark"
+             xmlns:sys="clr-namespace:System;assembly=System.Runtime">
+    <!-- RequestedThemeVariant はデザイナープレビュー用のデフォルト。
+         実行時は App.OnFrameworkInitializationCompleted で
+         settings.json の値により上書きされる。 -->
+
+    <Application.DataTemplates>
+        <local:ViewLocator/>
+    </Application.DataTemplates>
+
+    <Application.Styles>
+        <FluentTheme />
+    </Application.Styles>
+
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.ThemeDictionaries>
+                <ResourceDictionary x:Key="Dark">
+                    <SolidColorBrush x:Key="AppAddressBarBg"     Color="#2D2D2D"/>
+                    <SolidColorBrush x:Key="AppSearchPanelBg"    Color="#252526"/>
+                    <SolidColorBrush x:Key="AppTreeBg"           Color="#252526"/>
+                    <SolidColorBrush x:Key="AppEditorBg"         Color="#1E1E1E"/>
+                    <SolidColorBrush x:Key="AppHeaderBg"         Color="#2D2D2D"/>
+                    <SolidColorBrush x:Key="AppSeparatorBg"      Color="#3E3E42"/>
+                    <SolidColorBrush x:Key="AppStatusBarBg"      Color="#3C3C3C"/>
+                    <SolidColorBrush x:Key="AppStatusBarFg"      Color="#CCCCCC"/>
+                    <SolidColorBrush x:Key="AppLabelFg"          Color="#CCCCCC"/>
+                    <SolidColorBrush x:Key="AppAccentFg"         Color="#9CDCFE"/>
+                    <SolidColorBrush x:Key="AppBorderBrush"      Color="#3E3E42"/>
+                    <SolidColorBrush x:Key="AppSearchBorderBg"   Color="#454545"/>
+                    <SolidColorBrush x:Key="AppEditorFg"         Color="#D4D4D4"/>
+                    <SolidColorBrush x:Key="AppEditorModifiedFg" Color="#4EC9B0"/>
+                    <SolidColorBrush x:Key="AppEditorFocusBg"    Color="#1A3A5C"/>
+                    <SolidColorBrush x:Key="AppPreviewResultFg"  Color="#4EC9B0"/>
+                    <SolidColorBrush x:Key="AppPreviewRegexFg"   Color="#DCDCAA"/>
+                    <SolidColorBrush x:Key="AppEditorReadOnlyFg" Color="#606060"/>
+                    <SolidColorBrush x:Key="AppEditorReadOnlyBg" Color="#2A2A2A"/>
+                </ResourceDictionary>
+                <ResourceDictionary x:Key="Light">
+                    <SolidColorBrush x:Key="AppAddressBarBg"     Color="#F0F0F0"/>
+                    <SolidColorBrush x:Key="AppSearchPanelBg"    Color="#E8E8E8"/>
+                    <SolidColorBrush x:Key="AppTreeBg"           Color="#F5F5F5"/>
+                    <SolidColorBrush x:Key="AppEditorBg"         Color="#FFFFFF"/>
+                    <SolidColorBrush x:Key="AppHeaderBg"         Color="#EBEBEB"/>
+                    <SolidColorBrush x:Key="AppSeparatorBg"      Color="#CCCCCC"/>
+                    <SolidColorBrush x:Key="AppStatusBarBg"      Color="#D0D0D0"/>
+                    <SolidColorBrush x:Key="AppStatusBarFg"      Color="#333333"/>
+                    <SolidColorBrush x:Key="AppLabelFg"          Color="#333333"/>
+                    <SolidColorBrush x:Key="AppAccentFg"         Color="#0078D4"/>
+                    <SolidColorBrush x:Key="AppBorderBrush"      Color="#CCCCCC"/>
+                    <SolidColorBrush x:Key="AppSearchBorderBg"   Color="#BBBBBB"/>
+                    <SolidColorBrush x:Key="AppEditorFg"         Color="#1E1E1E"/>
+                    <SolidColorBrush x:Key="AppEditorModifiedFg" Color="#0E7490"/>
+                    <SolidColorBrush x:Key="AppEditorFocusBg"    Color="#DBEAFE"/>
+                    <SolidColorBrush x:Key="AppPreviewResultFg"  Color="#0E7490"/>
+                    <SolidColorBrush x:Key="AppPreviewRegexFg"   Color="#7C5C00"/>
+                    <SolidColorBrush x:Key="AppEditorReadOnlyFg" Color="#A0A0A0"/>
+                    <SolidColorBrush x:Key="AppEditorReadOnlyBg" Color="#F0F0F0"/>
+                </ResourceDictionary>
+            </ResourceDictionary.ThemeDictionaries>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>
