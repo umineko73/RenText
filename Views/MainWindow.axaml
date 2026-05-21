@@ -1,4 +1,4 @@
-<Window xmlns="https://github.com/avaloniaui"
+﻿<Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="using:RenText.ViewModels"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -93,7 +93,7 @@
             </Grid>
         </Border>
 
-        <!-- ===== 検索置換パネル（VS Code スタイル） ===== -->
+        <!-- ===== 検索置換パネル ===== -->
         <Border Grid.Row="1"
                 IsVisible="{Binding IsSearchPanelVisible}"
                 Background="{DynamicResource AppSearchPanelBg}"
@@ -137,17 +137,17 @@
                         Content="{DynamicResource Btn_ReplaceAll}"
                         Command="{Binding ReplaceAllCommand}"
                         Classes="toolbar"/>
-                <Button Grid.Column="7" Content="✕"
+                <Button Grid.Column="7" Content="X"
                         Command="{Binding ToggleSearchPanelCommand}"
                         Classes="toolbar"/>
             </Grid>
         </Border>
 
-        <!-- ===== メインコンテンツ（3ペイン） ===== -->
+        <!-- ===== メインコンテンツペイン ===== -->
         <Panel Grid.Row="2">
         <Grid ColumnDefinitions="220,4,*,4,320">
 
-            <!-- フォルダツリー -->
+            <!-- フォルダーツリー -->
             <Border Grid.Column="0" Background="{DynamicResource AppTreeBg}"
                     BorderBrush="{DynamicResource AppBorderBrush}" BorderThickness="0,0,1,0">
                 <TreeView x:Name="FolderTreeView"
@@ -166,8 +166,7 @@
                         <TreeDataTemplate x:DataType="vm:FolderTreeItemViewModel"
                                           ItemsSource="{Binding Children}">
                             <StackPanel Orientation="Horizontal" Spacing="4">
-                                <!-- Foreground を固定して TreeViewItem の状態変化（Selected/PointerOver等）が
-                                     絵文字の描画に伝播しないようにする -->
+                                <!-- アイコン色を固定し、選択やホバー状態の色変更が絵文字に影響しないようにする -->
                                 <TextBlock Text="{Binding Icon}"
                                            FontSize="13"
                                            FontFamily="Segoe UI Emoji"
@@ -216,7 +215,7 @@
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate x:DataType="vm:FileLineViewModel">
                                     <Grid ColumnDefinitions="3,Auto,*">
-                                        <!-- エラー時: 赤帯 / 読み取り専用時: グレー帯 -->
+                                        <!-- エラー時は赤帯、読み取り専用時はグレー帯を表示 -->
                                         <Rectangle Grid.Column="0"
                                                    Fill="#F44747"
                                                    IsVisible="{Binding HasError}"/>
@@ -247,7 +246,7 @@
                         </ItemsControl>
                     </ScrollViewer>
 
-                    <!-- 未選択・空フォルダ時のプレースホルダー -->
+                    <!-- 未選択または空フォルダー時のプレースホルダー -->
                     <TextBlock Grid.Row="1"
                                Text="{Binding EmptyListMessage}"
                                IsVisible="{Binding ShowEmptyPlaceholder}"
@@ -260,7 +259,7 @@
                                FontSize="13"
                                Foreground="#808080"/>
 
-                    <!-- 保存成功トースト（1秒表示） -->
+                    <!-- 保存成功トースト -->
                     <Border Grid.Row="1"
                             IsVisible="{Binding ShowSuccessMessage}"
                             IsHitTestVisible="False"
@@ -272,7 +271,7 @@
                             BorderBrush="#4EC9B0"
                             BorderThickness="1">
                         <StackPanel Orientation="Horizontal" Spacing="10">
-                            <TextBlock Text="✓"
+                            <TextBlock Text="OK"
                                        FontSize="20"
                                        FontWeight="Bold"
                                        Foreground="#4EC9B0"
@@ -284,7 +283,7 @@
                         </StackPanel>
                     </Border>
 
-                    <!-- フォルダ全体に関わるエラー（アクセス拒否・パス無効など） -->
+                    <!-- フォルダー全体に関するエラー表示 -->
                     <Border Grid.Row="1"
                             IsVisible="{Binding ShowErrorMessage}"
                             IsHitTestVisible="False"
@@ -297,7 +296,7 @@
                             BorderBrush="#F44747"
                             BorderThickness="1">
                         <StackPanel Orientation="Horizontal" Spacing="10">
-                            <TextBlock Text="⚠"
+                            <TextBlock Text="!"
                                        FontSize="20"
                                        Foreground="#F44747"
                                        VerticalAlignment="Center"/>
@@ -343,7 +342,7 @@
                                                        Foreground="#808080"
                                                        Text="{Binding Source.OriginalName}"/>
                                             <StackPanel Orientation="Horizontal">
-                                                <TextBlock Text="  → "
+                                                <TextBlock Text="  -> "
                                                            Foreground="#569CD6"
                                                            FontFamily="Consolas,monospace"
                                                            FontSize="12"/>

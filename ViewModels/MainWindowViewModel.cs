@@ -401,16 +401,20 @@ public partial class MainWindowViewModel : ViewModelBase
             line.ErrorMessage = null;
         }
 
-        var originals = FileLines.Select(f => f.Source).ToList();
-        var newNames = FileLines.Select(f => f.EditedName.Trim()).ToList();
+        var editableLines = FileLines.Where(f => !f.IsReadOnly).ToList();
+        if (editableLines.Count == 0)
+            return;
+
+        var originals = editableLines.Select(f => f.Source).ToList();
+        var newNames = editableLines.Select(f => f.EditedName.Trim()).ToList();
 
         var validation = _renameService.Validate(CurrentPath, originals, newNames);
         if (!validation.Success)
         {
-            if (validation.ErrorIndex >= 0 && validation.ErrorIndex < FileLines.Count)
+            if (validation.ErrorIndex >= 0 && validation.ErrorIndex < editableLines.Count)
             {
-                FileLines[validation.ErrorIndex].HasError = true;
-                FileLines[validation.ErrorIndex].ErrorMessage = validation.ErrorMessage;
+                editableLines[validation.ErrorIndex].HasError = true;
+                editableLines[validation.ErrorIndex].ErrorMessage = validation.ErrorMessage;
             }
             StatusMessage = string.Format(L.Get("Status_Error"), validation.ErrorMessage);
             HasError = true;
@@ -454,6 +458,9 @@ public partial class MainWindowViewModel : ViewModelBase
         int count = 0;
         foreach (var line in FileLines)
         {
+            if (line.IsReadOnly)
+                continue;
+
             string replaced;
             try
             {

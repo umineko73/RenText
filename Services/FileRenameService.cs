@@ -109,7 +109,7 @@ public class FileRenameService
         for (int i = 0; i < originals.Count; i++)
         {
             var trimmed = newNames[i].Trim();
-            if (!string.Equals(originals[i].OriginalName, trimmed, StringComparison.OrdinalIgnoreCase))
+            if (!string.Equals(originals[i].OriginalName, trimmed, StringComparison.Ordinal))
                 pending[originals[i].OriginalName] = trimmed;
         }
 
