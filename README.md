@@ -115,7 +115,7 @@ cd RenText
 dotnet run
 ```
 
-**Publish as a single folder:**
+**Publish (single-file, framework-dependent):**
 
 ```bash
 dotnet publish -c Release -r win-x64 --self-contained false -p:PublishSingleFile=true --output ./publish
