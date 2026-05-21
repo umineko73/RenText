@@ -47,7 +47,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Settings persistence (`settings.json`) for theme and language preferences
 
 #### Distribution
-- Self-contained Windows x64 build — no .NET runtime installation required
+- Windows x64 single-file build (framework-dependent) — requires [.NET 9 Desktop Runtime](https://dotnet.microsoft.com/download/dotnet/9.0)
 
 ---
 

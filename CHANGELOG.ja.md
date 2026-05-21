@@ -47,7 +47,7 @@
 - テーマと言語設定の永続化（`settings.json`）
 
 #### 配布
-- 自己完結型 Windows x64 ビルド — .NET ランタイムのインストール不要
+- Windows x64 シングルファイルビルド（framework-dependent）— [.NET 9 Desktop Runtime](https://dotnet.microsoft.com/download/dotnet/9.0) が必要
 
 ---
 
