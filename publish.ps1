@@ -21,8 +21,9 @@ if (Test-Path $zipPath)  { Remove-Item $zipPath  -Force }
 dotnet publish -c Release -r win-x64 --self-contained false -p:PublishSingleFile=true -o $buildDir
 if ($LASTEXITCODE -ne 0) { Write-Host "Build failed." -ForegroundColor Red; exit 1 }
 
-# Remove PDB files
+# Remove PDB files and runtime-generated files
 Get-ChildItem $buildDir -Filter "*.pdb" | Remove-Item -Force
+if (Test-Path "$buildDir\settings.json") { Remove-Item "$buildDir\settings.json" -Force }
 
 # Create zip
 New-Item -ItemType Directory -Force -Path $publishDir | Out-Null
