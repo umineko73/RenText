@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
+using System.Reflection;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
@@ -40,6 +41,8 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
+        var version = Assembly.GetExecutingAssembly().GetName().Version;
+        Title = $"RenText v{version?.ToString(3) ?? "0.1.0"}";
         Closed += (_, _) => (DataContext as MainWindowViewModel)?.Cleanup();
     }
 
