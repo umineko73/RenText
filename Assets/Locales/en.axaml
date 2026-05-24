@@ -42,7 +42,7 @@
     <!-- Status messages -->
     <sys:String x:Key="Status_SelectFolder">Select a folder</sys:String>
     <sys:String x:Key="Status_Loading">Loading...</sys:String>
-    <sys:String x:Key="Status_FileCount">{0} files  |  {1}</sys:String>
+    <sys:String x:Key="Status_FileCount">{0} items  |  {1}</sys:String>
     <sys:String x:Key="Status_Saved">Saved</sys:String>
     <sys:String x:Key="Status_Reset">Changes reverted</sys:String>
     <sys:String x:Key="Status_NoMatch">No matches</sys:String>
@@ -53,11 +53,11 @@
     <sys:String x:Key="Status_AccessDenied">Cannot access folder: {0}</sys:String>
     <sys:String x:Key="Status_ReadFailed">Could not read folder: {0}</sys:String>
     <sys:String x:Key="Status_WatchPaused">Auto-refresh paused (unsaved edits)</sys:String>
-    <sys:String x:Key="Tooltip_ReadOnly">Read-only file (cannot rename)</sys:String>
+    <sys:String x:Key="Tooltip_ReadOnly">Read-only (cannot rename)</sys:String>
 
     <!-- File list placeholder -->
     <sys:String x:Key="Empty_NoFolder">📂 Select a folder from the tree or address bar</sys:String>
-    <sys:String x:Key="Empty_NoFiles">No files in this folder</sys:String>
+    <sys:String x:Key="Empty_NoFiles">This folder is empty</sys:String>
 
     <!-- Dialog -->
     <sys:String x:Key="Dialog_SelectFolder">Select Folder</sys:String>

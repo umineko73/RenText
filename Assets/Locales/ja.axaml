@@ -42,7 +42,7 @@
     <!-- Status messages -->
     <sys:String x:Key="Status_SelectFolder">フォルダーを選択してください</sys:String>
     <sys:String x:Key="Status_Loading">読み込み中...</sys:String>
-    <sys:String x:Key="Status_FileCount">{0} ファイル  |  {1}</sys:String>
+    <sys:String x:Key="Status_FileCount">{0} 件  |  {1}</sys:String>
     <sys:String x:Key="Status_Saved">保存しました</sys:String>
     <sys:String x:Key="Status_Reset">変更を元に戻しました</sys:String>
     <sys:String x:Key="Status_NoMatch">一致しません</sys:String>
@@ -53,11 +53,11 @@
     <sys:String x:Key="Status_AccessDenied">フォルダーにアクセスできません: {0}</sys:String>
     <sys:String x:Key="Status_ReadFailed">フォルダーを読み込めません: {0}</sys:String>
     <sys:String x:Key="Status_WatchPaused">編集中のため自動更新を停止しています</sys:String>
-    <sys:String x:Key="Tooltip_ReadOnly">読み取り専用ファイル (リネーム不可)</sys:String>
+    <sys:String x:Key="Tooltip_ReadOnly">読み取り専用 (リネーム不可)</sys:String>
 
     <!-- File list placeholder -->
     <sys:String x:Key="Empty_NoFolder">📂 左のツリーまたはアドレスバーでフォルダーを選択してください</sys:String>
-    <sys:String x:Key="Empty_NoFiles">このフォルダーにファイルはありません</sys:String>
+    <sys:String x:Key="Empty_NoFiles">このフォルダーは空です</sys:String>
 
     <!-- Dialog -->
     <sys:String x:Key="Dialog_SelectFolder">フォルダーを選択</sys:String>

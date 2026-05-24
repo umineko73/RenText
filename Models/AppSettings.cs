@@ -18,6 +18,11 @@ namespace RenText.Models;
 
 public class AppSettings
 {
-    public string Language { get; set; } = "ja";
-    public string Theme    { get; set; } = "dark";
+    public string  Language    { get; set; } = "ja";
+    public string  Theme       { get; set; } = "dark";
+    public double? WindowWidth    { get; set; }
+    public double? WindowHeight   { get; set; }
+    public bool    IsMaximized    { get; set; }
+    public double? TreePaneWidth  { get; set; }
+    public double? PreviewPaneWidth { get; set; }
 }

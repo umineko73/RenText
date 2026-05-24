@@ -21,6 +21,7 @@ using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Interactivity;
+using Avalonia.Layout;
 using Avalonia.Platform.Storage;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
@@ -43,7 +44,18 @@ public partial class MainWindow : Window
         InitializeComponent();
         var version = Assembly.GetExecutingAssembly().GetName().Version;
         Title = $"RenText v{version?.ToString(3) ?? "0.1.0"}";
-        Closed += (_, _) => (DataContext as MainWindowViewModel)?.Cleanup();
+        Closed += (_, _) =>
+        {
+            if (DataContext is MainWindowViewModel vm)
+            {
+                var grid = this.FindControl<Grid>("MainPanesGrid");
+                double treeW    = grid?.ColumnDefinitions[0].ActualWidth ?? 300;
+                double previewW = grid?.ColumnDefinitions[4].ActualWidth ?? 320;
+                vm.SaveWindowGeometry(Width, Height, WindowState == WindowState.Maximized,
+                    treeW, previewW);
+                vm.Cleanup();
+            }
+        };
     }
 
     protected override void OnDataContextChanged(EventArgs e)
@@ -62,6 +74,15 @@ public partial class MainWindow : Window
             vm.TreeRebuildCompleted += OnTreeRebuildCompleted;
 
             vm.InitializeFolderTree();
+
+            // 前回のペイン幅を復元する
+            var grid = this.FindControl<Grid>("MainPanesGrid");
+            if (grid != null)
+            {
+                var (treeW, previewW) = vm.GetSavedPaneWidths();
+                grid.ColumnDefinitions[0].Width = new GridLength(treeW,    GridUnitType.Pixel);
+                grid.ColumnDefinitions[4].Width = new GridLength(previewW, GridUnitType.Pixel);
+            }
 
             var treeView = this.FindControl<TreeView>("FolderTreeView");
             if (treeView != null)
@@ -176,6 +197,13 @@ public partial class MainWindow : Window
         else if (e.Key == Key.H && e.KeyModifiers == KeyModifiers.Control)
         {
             vm.ToggleSearchPanelCommand.Execute(null);
+            e.Handled = true;
+        }
+        else if (e.Key == Key.F5)
+        {
+            vm.RefreshFolderTree();
+            if (!string.IsNullOrEmpty(vm.CurrentPath))
+                _ = vm.LoadFolderAsync(vm.CurrentPath);
             e.Handled = true;
         }
     }

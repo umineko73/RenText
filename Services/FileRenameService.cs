@@ -73,11 +73,12 @@ public class FileRenameService
                     return new RenameResult(false, string.Format(L.Get("Err_Duplicate"), lineNo, name), i);
             }
 
-            // 変更がある場合のみ既存ファイルとの衝突チェック。
-            // ただし、ターゲット名と同名のファイルが同バッチ内で別名にリネームされる予定なら衝突しない。
+            // 変更がある場合のみ既存エントリとの衝突チェック。
+            // ただし、ターゲット名と同名のエントリが同バッチ内で別名にリネームされる予定なら衝突しない。
             if (!string.Equals(originals[i].OriginalName, name, StringComparison.OrdinalIgnoreCase))
             {
-                if (File.Exists(targetPath) && !IsBeingRenamedAway(originals, newNames, name))
+                bool targetExists = File.Exists(targetPath) || Directory.Exists(targetPath);
+                if (targetExists && !IsBeingRenamedAway(originals, newNames, name))
                     return new RenameResult(false, string.Format(L.Get("Err_AlreadyExists"), lineNo, name), i);
             }
         }
@@ -113,8 +114,12 @@ public class FileRenameService
                 pending[originals[i].OriginalName] = trimmed;
         }
 
-        // ロールバック用: (実行後のパス → 元のパス) の逆順リスト
-        var completed = new List<(string From, string To)>();
+        // ディレクトリかどうかのルックアップ（サイクル解消時の一時名にも伝播させる）
+        var isDirMap = originals.ToDictionary(e => e.OriginalName, e => e.IsDirectory,
+                                               StringComparer.OrdinalIgnoreCase);
+
+        // ロールバック用: (実行後のパス → 元のパス, ディレクトリか) の逆順リスト
+        var completed = new List<(string From, string To, bool IsDir)>();
 
         try
         {
@@ -133,23 +138,32 @@ public class FileRenameService
                     {
                         var src = Path.Combine(directoryPath, from);
                         var dst = Path.Combine(directoryPath, to);
-                        File.Move(src, dst);
-                        completed.Add((dst, src)); // 逆向きで保存
+                        bool isDir = isDirMap.GetValueOrDefault(from, false);
+                        if (isDir)
+                            Directory.Move(src, dst);
+                        else
+                            File.Move(src, dst);
+                        completed.Add((dst, src, isDir)); // 逆向きで保存
                         pending.Remove(from);
                     }
                 }
                 else
                 {
                     // pending に残っているのはすべてサイクル（例: A→B, B→A）。
-                    // 先頭の1件を一時ファイル名にリネームしてサイクルを解消する。
+                    // 先頭の1件を一時名にリネームしてサイクルを解消する。
                     var cycleFrom = pending.Keys.First();
                     var cycleTo   = pending[cycleFrom];
                     var tempName  = GenerateTempName(directoryPath, cycleFrom);
+                    bool cycleIsDir = isDirMap.GetValueOrDefault(cycleFrom, false);
 
                     var src = Path.Combine(directoryPath, cycleFrom);
                     var tmp = Path.Combine(directoryPath, tempName);
-                    File.Move(src, tmp);
-                    completed.Add((tmp, src));
+                    if (cycleIsDir)
+                        Directory.Move(src, tmp);
+                    else
+                        File.Move(src, tmp);
+                    completed.Add((tmp, src, cycleIsDir));
+                    isDirMap[tempName] = cycleIsDir; // 一時名にもディレクトリフラグを伝播
 
                     pending.Remove(cycleFrom);
                     pending[tempName] = cycleTo; // 一時名 → 本来の宛先 に差し替え
@@ -163,7 +177,13 @@ public class FileRenameService
             // 完全ロールバック（逆順）
             for (int i = completed.Count - 1; i >= 0; i--)
             {
-                try { File.Move(completed[i].From, completed[i].To); }
+                try
+                {
+                    if (completed[i].IsDir)
+                        Directory.Move(completed[i].From, completed[i].To);
+                    else
+                        File.Move(completed[i].From, completed[i].To);
+                }
                 catch { /* ベストエフォート */ }
             }
 
@@ -171,16 +191,14 @@ public class FileRenameService
         }
     }
 
-    /// <summary>
-    /// ディレクトリ内に存在しない一時ファイル名を生成する。
-    /// </summary>
     private static string GenerateTempName(string directoryPath, string baseName)
     {
         string tempName;
         do
         {
             tempName = $"__rentext_{Guid.NewGuid():N}_{baseName}";
-        } while (File.Exists(Path.Combine(directoryPath, tempName)));
+        } while (File.Exists(Path.Combine(directoryPath, tempName))
+              || Directory.Exists(Path.Combine(directoryPath, tempName)));
         return tempName;
     }
 }

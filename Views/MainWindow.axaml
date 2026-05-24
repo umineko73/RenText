@@ -145,7 +145,7 @@
 
         <!-- ===== メインコンテンツペイン ===== -->
         <Panel Grid.Row="2">
-        <Grid ColumnDefinitions="220,4,*,4,320">
+        <Grid x:Name="MainPanesGrid" ColumnDefinitions="300,4,*,4,320">
 
             <!-- フォルダーツリー -->
             <Border Grid.Column="0" Background="{DynamicResource AppTreeBg}"
@@ -214,7 +214,7 @@
                                       Background="Transparent">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate x:DataType="vm:FileLineViewModel">
-                                    <Grid ColumnDefinitions="3,Auto,*">
+                                    <Grid ColumnDefinitions="3,Auto,Auto,*">
                                         <!-- エラー時は赤帯、読み取り専用時はグレー帯を表示 -->
                                         <Rectangle Grid.Column="0"
                                                    Fill="#F44747"
@@ -232,7 +232,16 @@
                                                    Foreground="#808080"
                                                    VerticalAlignment="Center"
                                                    Margin="8,0,8,0"/>
-                                        <TextBox Grid.Column="2"
+                                        <TextBlock Grid.Column="2"
+                                                   Text="{Binding TypeIcon}"
+                                                   Width="22"
+                                                   TextAlignment="Center"
+                                                   FontSize="13"
+                                                   FontFamily="Segoe UI Emoji"
+                                                   Foreground="#E2C275"
+                                                   VerticalAlignment="Center"
+                                                   Margin="4,0,0,0"/>
+                                        <TextBox Grid.Column="3"
                                                  Text="{Binding EditedName}"
                                                  IsReadOnly="{Binding IsReadOnly}"
                                                  Classes="editor-line"

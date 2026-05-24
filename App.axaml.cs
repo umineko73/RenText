@@ -15,6 +15,7 @@
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Avalonia.Styling;
@@ -42,10 +43,16 @@ public partial class App : Application
 
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            desktop.MainWindow = new MainWindow
+            var mainWindow = new MainWindow
             {
                 DataContext = new MainWindowViewModel(settings, settingsService),
             };
+
+            if (settings.WindowWidth.HasValue)  mainWindow.Width  = settings.WindowWidth.Value;
+            if (settings.WindowHeight.HasValue) mainWindow.Height = settings.WindowHeight.Value;
+            if (settings.IsMaximized)           mainWindow.WindowState = WindowState.Maximized;
+
+            desktop.MainWindow = mainWindow;
         }
 
         base.OnFrameworkInitializationCompleted();

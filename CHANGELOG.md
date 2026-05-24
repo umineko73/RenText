@@ -7,6 +7,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.2] - 2026-05-24
+
+### Added
+- `F5` key now refreshes both the folder tree and the file list
+- Folder tree pane width and preview pane width are now saved to `settings.json` and restored on next launch
+
+### Fixed
+- Folder tree no longer retains a stale directory name after renaming a subdirectory
+- Directories with the Windows `ReadOnly` file attribute (used for custom folder icons) were incorrectly treated as read-only and excluded from rename operations — corrected to always allow renaming
+
+### Changed
+- Migrated from .NET 9 to .NET 10
+- Various minor fixes
+
+## [0.1.1] - 2026-05-24
+
+### Added
+- Subdirectories are now listed in the file pane alongside files and can be renamed in the same way
+- Directory entries are shown with a 📁 icon; directories always appear above files regardless of the active sort column
+- Auto-refresh now detects subdirectory creation, deletion, and rename within the current folder
+
+### Changed
+- Folder tree pane initial width increased from 220 px to 280 px
+- Window size and maximized state are now saved to `settings.json` and restored on next launch
+
 ## [0.1.0] - 2026-05-21
 
 ### Added
@@ -51,5 +76,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-[Unreleased]: https://github.com/umineko73/RenText/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/umineko73/RenText/compare/v0.1.2...HEAD
+[0.1.2]: https://github.com/umineko73/RenText/compare/v0.1.1...v0.1.2
+[0.1.1]: https://github.com/umineko73/RenText/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/umineko73/RenText/releases/tag/v0.1.0

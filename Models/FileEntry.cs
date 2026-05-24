@@ -21,5 +21,6 @@ public record FileEntry(
     string OriginalName,
     DateTime LastModified,
     long FileSize,
-    bool IsReadOnly = false
+    bool IsReadOnly = false,
+    bool IsDirectory = false
 );

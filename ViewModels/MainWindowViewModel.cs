@@ -32,6 +32,11 @@ public partial class MainWindowViewModel : ViewModelBase
     private readonly FileRenameService _renameService = new();
     private readonly SettingsService _settingsService;
     private CancellationTokenSource? _loadCts;
+    private double? _windowWidth;
+    private double? _windowHeight;
+    private bool    _windowIsMaximized;
+    private double? _treePaneWidth;
+    private double? _previewPaneWidth;
     private FileSystemWatcher? _fsWatcher;
     private FileSystemWatcher? _parentWatcher;
     private CancellationTokenSource? _watcherDebounce;
@@ -102,18 +107,82 @@ public partial class MainWindowViewModel : ViewModelBase
 
     partial void OnShowHiddenItemsChanged(bool value)
     {
-        var expandedPaths = CollectExpandedPaths(FolderTree).ToHashSet(StringComparer.OrdinalIgnoreCase);
-        TreeRebuildStarting?.Invoke(this, EventArgs.Empty);
-        InitializeFolderTree();
-        RestoreExpansion(FolderTree, expandedPaths);
-        RestoreSelection(FolderTree, CurrentPath);
-        TreeRebuildCompleted?.Invoke(this, EventArgs.Empty);
+        RefreshFolderTree();
         if (!string.IsNullOrEmpty(CurrentPath))
             _ = LoadFolderAsync(CurrentPath);
     }
 
+    // ツリーを再構築し、展開状態・選択状態を復元する。
+    // ・ディレクトリのリネーム後
+    // ・F5 リフレッシュ
+    // ・隠しフォルダ表示切替
+    // から共通で呼ぶ。
+    public void RefreshFolderTree(IReadOnlyList<(string OldPath, string NewPath)>? renamedPaths = null)
+    {
+        var expandedPaths = CollectExpandedPaths(FolderTree)
+            .Select(path => RemapPath(path, renamedPaths))
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+        var selectedPath = RemapPath(CurrentPath, renamedPaths);
+
+        TreeRebuildStarting?.Invoke(this, EventArgs.Empty);
+        InitializeFolderTree();
+        RestoreExpansion(FolderTree, expandedPaths);
+        RestoreSelection(FolderTree, selectedPath);
+        TreeRebuildCompleted?.Invoke(this, EventArgs.Empty);
+    }
+
+    private static string RemapPath(
+        string path,
+        IReadOnlyList<(string OldPath, string NewPath)>? renamedPaths)
+    {
+        if (string.IsNullOrEmpty(path) || renamedPaths == null)
+            return path;
+
+        foreach (var (oldPath, newPath) in renamedPaths)
+        {
+            if (string.Equals(path, oldPath, StringComparison.OrdinalIgnoreCase))
+                return newPath;
+
+            if (path.Length <= oldPath.Length ||
+                !path.StartsWith(oldPath, StringComparison.OrdinalIgnoreCase))
+                continue;
+
+            var separator = path[oldPath.Length];
+            if (separator == Path.DirectorySeparatorChar ||
+                separator == Path.AltDirectorySeparatorChar)
+                return newPath + path[oldPath.Length..];
+        }
+
+        return path;
+    }
+
     public event EventHandler? TreeRebuildStarting;
     public event EventHandler? TreeRebuildCompleted;
+
+    /// <summary>
+    /// 指定パスに一致するツリーノードの子を再読み込みする。
+    /// FolderTree 全体を再構築せず、該当ノードの Children だけを更新するため
+    /// Avalonia の描画更新が確実に反映される。
+    /// </summary>
+    private void ReloadTreeNodeChildren(string path)
+        => ReloadTreeNodeChildrenCore(FolderTree, path);
+
+    private static bool ReloadTreeNodeChildrenCore(
+        IEnumerable<FolderTreeItemViewModel> nodes, string path)
+    {
+        foreach (var node in nodes)
+        {
+            if (string.Equals(node.FullPath, path, StringComparison.OrdinalIgnoreCase))
+            {
+                System.Diagnostics.Debug.WriteLine($"[TreeReload] ReloadChildren on: {node.FullPath}");
+                node.ReloadChildren();
+                return true;
+            }
+            if (ReloadTreeNodeChildrenCore(node.Children, path))
+                return true;
+        }
+        return false;
+    }
 
     private static IEnumerable<string> CollectExpandedPaths(IEnumerable<FolderTreeItemViewModel> items)
     {
@@ -256,19 +325,22 @@ public partial class MainWindowViewModel : ViewModelBase
 
     private void ApplySort()
     {
+        // ディレクトリを常にファイルより先に表示する
+        var byDir = FileLines.OrderBy(f => f.IsDirectory ? 0 : 1);
+
         var sorted = (CurrentSortColumn, SortAscending) switch
         {
-            (SortColumn.Name, true)      => FileLines.OrderBy(f => f.EditedName, StringComparer.OrdinalIgnoreCase),
-            (SortColumn.Name, false)     => FileLines.OrderByDescending(f => f.EditedName, StringComparer.OrdinalIgnoreCase),
-            (SortColumn.Date, true)      => FileLines.OrderBy(f => f.Source.LastModified),
-            (SortColumn.Date, false)     => FileLines.OrderByDescending(f => f.Source.LastModified),
-            (SortColumn.Extension, true) => FileLines.OrderBy(f => Path.GetExtension(f.EditedName), StringComparer.OrdinalIgnoreCase)
-                                                     .ThenBy(f => f.EditedName, StringComparer.OrdinalIgnoreCase),
-            (SortColumn.Extension, false)=> FileLines.OrderByDescending(f => Path.GetExtension(f.EditedName), StringComparer.OrdinalIgnoreCase)
-                                                     .ThenBy(f => f.EditedName, StringComparer.OrdinalIgnoreCase),
-            (SortColumn.Size, true)      => FileLines.OrderBy(f => f.Source.FileSize),
-            (SortColumn.Size, false)     => FileLines.OrderByDescending(f => f.Source.FileSize),
-            _                            => FileLines.OrderBy(f => f.EditedName, StringComparer.OrdinalIgnoreCase),
+            (SortColumn.Name, true)       => byDir.ThenBy(f => f.EditedName, StringComparer.OrdinalIgnoreCase),
+            (SortColumn.Name, false)      => byDir.ThenByDescending(f => f.EditedName, StringComparer.OrdinalIgnoreCase),
+            (SortColumn.Date, true)       => byDir.ThenBy(f => f.Source.LastModified),
+            (SortColumn.Date, false)      => byDir.ThenByDescending(f => f.Source.LastModified),
+            (SortColumn.Extension, true)  => byDir.ThenBy(f => Path.GetExtension(f.EditedName), StringComparer.OrdinalIgnoreCase)
+                                                  .ThenBy(f => f.EditedName, StringComparer.OrdinalIgnoreCase),
+            (SortColumn.Extension, false) => byDir.ThenByDescending(f => Path.GetExtension(f.EditedName), StringComparer.OrdinalIgnoreCase)
+                                                  .ThenBy(f => f.EditedName, StringComparer.OrdinalIgnoreCase),
+            (SortColumn.Size, true)       => byDir.ThenBy(f => f.Source.FileSize),
+            (SortColumn.Size, false)      => byDir.ThenByDescending(f => f.Source.FileSize),
+            _                             => byDir.ThenBy(f => f.EditedName, StringComparer.OrdinalIgnoreCase),
         };
 
         var list = sorted.ToList();
@@ -356,6 +428,11 @@ public partial class MainWindowViewModel : ViewModelBase
         _settingsService = settingsService;
         _currentLanguage = settings.Language;
         _isDarkMode = settings.Theme != "light";
+        _windowWidth      = settings.WindowWidth;
+        _windowHeight     = settings.WindowHeight;
+        _windowIsMaximized = settings.IsMaximized;
+        _treePaneWidth    = settings.TreePaneWidth;
+        _previewPaneWidth = settings.PreviewPaneWidth;
         _statusMessage = L.Get("Status_SelectFolder");
 
         L.LanguageChanged += OnLanguageChanged;
@@ -408,6 +485,14 @@ public partial class MainWindowViewModel : ViewModelBase
         var originals = editableLines.Select(f => f.Source).ToList();
         var newNames = editableLines.Select(f => f.EditedName.Trim()).ToList();
 
+        // Execute 前にリネーム対象ディレクトリのパスを記録する（LoadFolderAsync 後は IsModified がリセットされるため）
+        var renamedDirs = editableLines
+            .Where(f => f.IsDirectory && f.IsModified)
+            .Select(f => (
+                OldPath: Path.Combine(CurrentPath, f.Source.OriginalName),
+                NewPath: Path.Combine(CurrentPath, f.EditedName.Trim())
+            ))
+            .ToList();
         var validation = _renameService.Validate(CurrentPath, originals, newNames);
         if (!validation.Success)
         {
@@ -432,6 +517,16 @@ public partial class MainWindowViewModel : ViewModelBase
         HasError = false;
         StatusMessage = L.Get("Status_Saved");
         await LoadFolderAsync(CurrentPath);
+
+        // ディレクトリがリネームされた場合：ツリー全体の再構築ではなく
+        // 対象ノードの Children.Clear() + 再読込みで Avalonia UI へ確実に反映する。
+        if (renamedDirs.Count > 0)
+        {
+            System.Diagnostics.Debug.WriteLine(
+                $"[Save] renamedDirs={renamedDirs.Count}; reloading tree node for: {CurrentPath}");
+            ReloadTreeNodeChildren(CurrentPath);
+        }
+
         _ = ShowSuccessToastAsync();
     }
 
@@ -507,10 +602,10 @@ public partial class MainWindowViewModel : ViewModelBase
         StopWatching();
         if (!Directory.Exists(path)) return;
 
-        // ① 現在フォルダ内のファイル増減・リネームを監視
+        // ① 現在フォルダ内のファイル・サブディレクトリの増減・リネームを監視
         _fsWatcher = new FileSystemWatcher(path)
         {
-            NotifyFilter = NotifyFilters.FileName,
+            NotifyFilter = NotifyFilters.FileName | NotifyFilters.DirectoryName,
             IncludeSubdirectories = false,
             EnableRaisingEvents = true,
         };
@@ -572,7 +667,7 @@ public partial class MainWindowViewModel : ViewModelBase
         Dispatcher.UIThread.Post(async () =>
         {
             // フォルダツリーの選択ノードも新パスに合わせる
-            UpdateTreeSelection(CurrentPath, e.FullPath);
+            RefreshFolderTree([(CurrentPath, e.FullPath)]);
             await LoadFolderAsync(e.FullPath);
         });
     }
@@ -591,28 +686,6 @@ public partial class MainWindowViewModel : ViewModelBase
             HasError = true;
             StatusMessage = string.Format(L.Get("Status_FolderNotFound"), CurrentPath);
         });
-    }
-
-    // フォルダツリー内で oldPath に一致するノードを newPath に書き換える
-    private void UpdateTreeSelection(string oldPath, string newPath)
-    {
-        UpdateTreeNodePath(FolderTree, oldPath, newPath);
-    }
-
-    private static bool UpdateTreeNodePath(
-        IEnumerable<FolderTreeItemViewModel> nodes, string oldPath, string newPath)
-    {
-        foreach (var node in nodes)
-        {
-            if (string.Equals(node.FullPath, oldPath, StringComparison.OrdinalIgnoreCase))
-            {
-                node.UpdatePath(newPath);
-                return true;
-            }
-            if (UpdateTreeNodePath(node.Children, oldPath, newPath))
-                return true;
-        }
-        return false;
     }
 
     private void OnFsWatcherError(object sender, ErrorEventArgs e)
@@ -694,7 +767,7 @@ public partial class MainWindowViewModel : ViewModelBase
             {
                 try
                 {
-                    return ((IReadOnlyList<FileEntry>)_fsService.GetFiles(path, ShowHiddenItems),
+                    return ((IReadOnlyList<FileEntry>)_fsService.GetEntries(path, ShowHiddenItems),
                             (Exception?)null);
                 }
                 catch (Exception ex)
@@ -753,11 +826,37 @@ public partial class MainWindowViewModel : ViewModelBase
         await LoadFolderAsync(path);
     }
 
+    // ウィンドウ終了時に View から呼び出す。最終状態を保存してから Cleanup() を呼ぶこと。
+    public void SaveWindowGeometry(
+        double width, double height, bool isMaximized,
+        double treePaneWidth, double previewPaneWidth)
+    {
+        // 最大化中はウィンドウサイズが画面サイズになるため、通常サイズは上書きしない
+        if (!isMaximized)
+        {
+            _windowWidth  = width;
+            _windowHeight = height;
+        }
+        _windowIsMaximized = isMaximized;
+        // ペイン幅は最大化中でもユーザーが設定したサイズを保存する
+        _treePaneWidth    = treePaneWidth;
+        _previewPaneWidth = previewPaneWidth;
+        SaveSettings();
+    }
+
+    public (double Tree, double Preview) GetSavedPaneWidths() =>
+        (_treePaneWidth ?? 300, _previewPaneWidth ?? 320);
+
     private void SaveSettings() =>
         _settingsService.Save(new AppSettings
         {
-            Language = CurrentLanguage,
-            Theme    = IsDarkMode ? "dark" : "light",
+            Language        = CurrentLanguage,
+            Theme           = IsDarkMode ? "dark" : "light",
+            WindowWidth     = _windowWidth,
+            WindowHeight    = _windowHeight,
+            IsMaximized     = _windowIsMaximized,
+            TreePaneWidth   = _treePaneWidth,
+            PreviewPaneWidth = _previewPaneWidth,
         });
 
     public event EventHandler? OpenFolderDialogRequested;

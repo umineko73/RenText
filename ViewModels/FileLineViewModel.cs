@@ -45,6 +45,8 @@ public partial class FileLineViewModel : ObservableObject
     [NotifyPropertyChangedFor(nameof(PreviewResult))]
     private string? _previewName;
 
+    public bool IsDirectory  => Source.IsDirectory;
+    public string TypeIcon   => Source.IsDirectory ? "📁" : "📄";
     public bool IsReadOnly   => Source.IsReadOnly;
     public bool IsModified   => !IsReadOnly && EditedName.Trim() != Source.OriginalName;
     public bool HasPreview   => PreviewName != null && PreviewName != EditedName;
@@ -59,8 +61,10 @@ public partial class FileLineViewModel : ObservableObject
     public string PrefixText => _displayFormat switch
     {
         DisplayFormat.WithDate        => $"{Source.LastModified:yyyy-MM-dd HH:mm}",
-        DisplayFormat.WithSize        => FormatSize(Source.FileSize),
-        DisplayFormat.WithDateAndSize => $"{Source.LastModified:yyyy-MM-dd HH:mm}  {FormatSize(Source.FileSize)}",
+        DisplayFormat.WithSize        => Source.IsDirectory ? "  <DIR>" : FormatSize(Source.FileSize),
+        DisplayFormat.WithDateAndSize => Source.IsDirectory
+                                          ? $"{Source.LastModified:yyyy-MM-dd HH:mm}  {"  <DIR>"}"
+                                          : $"{Source.LastModified:yyyy-MM-dd HH:mm}  {FormatSize(Source.FileSize)}",
         _                             => ""
     };
 

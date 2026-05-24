@@ -66,16 +66,39 @@ public partial class FolderTreeItemViewModel : ObservableObject
 
     private void LoadChildren()
     {
+        var dirs = _fsService.GetSubDirectories(FullPath, _showHidden());
+        System.Diagnostics.Debug.WriteLine(
+            $"[LoadChildren] {FullPath} => [{string.Join(", ", dirs.Select(Path.GetFileName))}]");
         Children.Clear();
-        foreach (var dir in _fsService.GetSubDirectories(FullPath, _showHidden()))
+        foreach (var dir in dirs)
             Children.Add(new FolderTreeItemViewModel(dir, _fsService, _showHidden));
         _childrenLoaded = true;
     }
 
-    /// <summary>外部リネーム追従用：パスと表示名を更新する。</summary>
+    /// <summary>
+    /// 展開済みノードの子を再読み込みする。
+    /// FolderTree 全体の再構築より確実にAvalonia UIへ反映される。
+    /// 未展開の場合は次回展開時に自動ロードされるため何もしない。
+    /// </summary>
+    public void ReloadChildren()
+    {
+        if (!_childrenLoaded) return;
+        LoadChildren();
+    }
+
+    /// <summary>外部リネーム追従用：パスと表示名を更新する。展開済みの子ノードも再帰的に更新する。</summary>
     public void UpdatePath(string newPath)
     {
+        var oldRoot = FullPath;
         FullPath = newPath;
         Name = Path.GetFileName(newPath) is { Length: > 0 } n ? n : newPath;
+
+        // 展開済みで子が読み込まれている場合、子ノードのパスも更新する
+        foreach (var child in Children)
+        {
+            if (string.IsNullOrEmpty(child.FullPath)) continue; // ダミーノードはスキップ
+            // oldRoot 以下の相対部分を保ちつつ親パスを置き換える
+            child.UpdatePath(newPath + child.FullPath[oldRoot.Length..]);
+        }
     }
 }
