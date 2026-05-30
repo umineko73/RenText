@@ -108,6 +108,12 @@ Use `()` to capture a part of the filename, then reference it with `$1`, `$2`, â
 
 ---
 
+## Known Limitations
+
+- **Large folders**: Opening folders with a very large number of files (e.g. `C:\Windows\System32`) may cause sluggish performance, as the file list renders all entries at once without virtualization. RenText is intended for typical use cases such as photo collections, music libraries, and project directories â€” not system folders.
+
+---
+
 ## Build from Source
 
 **Requirements:** .NET 10 SDK
