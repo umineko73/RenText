@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.3] - 2026-05-31
+
+### Added
+- Last opened folder is saved to `settings.json` and automatically restored on next launch (folder tree expands and selects the node)
+- Command-line argument support — passing a folder path as the first argument opens that folder on startup (takes priority over the saved last-opened path)
+
 ## [0.1.2] - 2026-05-24
 
 ### Added
@@ -72,11 +78,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Settings persistence (`settings.json`) for theme and language preferences
 
 #### Distribution
-- Windows x64 single-file build (framework-dependent) — requires [.NET 9 Desktop Runtime](https://dotnet.microsoft.com/download/dotnet/9.0)
+- Windows x64 single-file build (framework-dependent) — requires [.NET 10 Desktop Runtime](https://dotnet.microsoft.com/download/dotnet/10.0)
 
 ---
 
-[Unreleased]: https://github.com/umineko73/RenText/compare/v0.1.2...HEAD
+[Unreleased]: https://github.com/umineko73/RenText/compare/v0.1.3...HEAD
+[0.1.3]: https://github.com/umineko73/RenText/compare/v0.1.2...v0.1.3
 [0.1.2]: https://github.com/umineko73/RenText/compare/v0.1.1...v0.1.2
 [0.1.1]: https://github.com/umineko73/RenText/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/umineko73/RenText/releases/tag/v0.1.0

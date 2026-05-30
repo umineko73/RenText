@@ -33,6 +33,8 @@
 - **ソート機能** — ファイル名・更新日・拡張子（昇順/降順）
 - **表示形式切替** — ファイル名のみ / 更新日時付き / サイズ付き / 日時＋サイズ
 - **フォルダツリー** — 遅延読み込み・ドライブ種別アイコン対応
+- **セッション復元** — 最後に開いたフォルダを記憶し、次回起動時に自動で開く（ツリーも自動展開）
+- **コマンドライン引数対応** — フォルダパスを引数に渡すと、そのフォルダを開いて起動
 - **ダーク / ライトモード** 切替
 - **キーボードナビゲーション** — ファイル一覧で `↑` `↓` `PageUp` `PageDown`
 
@@ -41,7 +43,7 @@
 ## 動作環境
 
 - Windows 10 / 11 (x64)
-- [.NET 9 Desktop Runtime](https://dotnet.microsoft.com/download/dotnet/9.0)（x64）
+- [.NET 10 Desktop Runtime](https://dotnet.microsoft.com/download/dotnet/10.0)（x64）
 
 ---
 
@@ -77,6 +79,7 @@ libSkiaSharp.dll
 |------|------|
 | `Ctrl+S` | 保存（リネーム実行） |
 | `Ctrl+H` | 検索・置換パネル 開閉 |
+| `F5` | フォルダツリーとファイル一覧を手動リフレッシュ |
 | `↑` / `↓` | ファイル間の移動（カーソル列位置を維持） |
 | `PageUp` / `PageDown` | 1ページ分移動 |
 
@@ -107,7 +110,7 @@ libSkiaSharp.dll
 
 ## ソースからビルド
 
-**必要なもの：** .NET 9 SDK
+**必要なもの：** .NET 10 SDK
 
 ```bash
 git clone https://github.com/umineko73/RenText.git
@@ -127,7 +130,7 @@ dotnet publish -c Release -r win-x64 --self-contained false -p:PublishSingleFile
 
 | | |
 |-|-|
-| 言語 | C# / .NET 9 |
+| 言語 | C# / .NET 10 |
 | UI フレームワーク | [Avalonia UI](https://avaloniaui.net/) 12 |
 | MVVM | [CommunityToolkit.Mvvm](https://learn.microsoft.com/en-us/dotnet/communitytoolkit/mvvm/) |
 

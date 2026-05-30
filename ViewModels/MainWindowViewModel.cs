@@ -826,6 +826,45 @@ public partial class MainWindowViewModel : ViewModelBase
         await LoadFolderAsync(path);
     }
 
+    // パスの祖先を順に展開し、対象ノードを選択する。
+    // 子ノードは展開時に同期ロードされるが、Avalonia の UI 更新を挟むため各ステップで Yield する。
+    public async Task ExpandTreeToPath(string path)
+    {
+        if (string.IsNullOrEmpty(path)) return;
+
+        // パスをルートから順に並べる（例: ["C:\", "C:\Users", "C:\Users\foo"]）
+        var segments = new List<string>();
+        var current = path;
+        while (!string.IsNullOrEmpty(current))
+        {
+            segments.Insert(0, current);
+            var parent = Path.GetDirectoryName(current);
+            if (parent == null || parent == current) break;
+            current = parent;
+        }
+
+        var nodes = (IEnumerable<FolderTreeItemViewModel>)FolderTree;
+        FolderTreeItemViewModel? target = null;
+
+        foreach (var segment in segments)
+        {
+            await Dispatcher.UIThread.InvokeAsync(() => { }, Avalonia.Threading.DispatcherPriority.Loaded);
+
+            target = nodes.FirstOrDefault(n =>
+                string.Equals(n.FullPath, segment, StringComparison.OrdinalIgnoreCase));
+
+            if (target == null) return;
+
+            if (segment != path)
+                target.IsExpanded = true;
+
+            nodes = target.Children;
+        }
+
+        if (target != null)
+            target.IsSelected = true;
+    }
+
     // ウィンドウ終了時に View から呼び出す。最終状態を保存してから Cleanup() を呼ぶこと。
     public void SaveWindowGeometry(
         double width, double height, bool isMaximized,
@@ -857,6 +896,7 @@ public partial class MainWindowViewModel : ViewModelBase
             IsMaximized     = _windowIsMaximized,
             TreePaneWidth   = _treePaneWidth,
             PreviewPaneWidth = _previewPaneWidth,
+            LastOpenedPath  = string.IsNullOrEmpty(CurrentPath) ? null : CurrentPath,
         });
 
     public event EventHandler? OpenFolderDialogRequested;

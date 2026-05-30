@@ -33,6 +33,8 @@ Instead of filling out forms or configuring rules, just edit filenames directly 
 - **Sort** by name / date / extension (ascending & descending)
 - **Display modes** — filename only / with date / with size / with date+size
 - **Folder tree** with lazy loading and drive type icons
+- **Session restore** — last opened folder is remembered and restored on next launch (tree expands automatically)
+- **Command-line argument** — pass a folder path to open it directly on startup
 - **Dark / Light mode** toggle
 - **Keyboard navigation** — `↑` `↓` `PageUp` `PageDown` in the file list
 
@@ -41,7 +43,7 @@ Instead of filling out forms or configuring rules, just edit filenames directly 
 ## Requirements
 
 - Windows 10 / 11 (x64)
-- [.NET 9 Desktop Runtime](https://dotnet.microsoft.com/download/dotnet/9.0) (x64)
+- [.NET 10 Desktop Runtime](https://dotnet.microsoft.com/download/dotnet/10.0) (x64)
 
 ---
 
@@ -77,6 +79,7 @@ libSkiaSharp.dll
 |-----|--------|
 | `Ctrl+S` | Save (apply renames) |
 | `Ctrl+H` | Toggle search & replace panel |
+| `F5` | Refresh folder tree and file list |
 | `↑` / `↓` | Move between files (preserves cursor column) |
 | `PageUp` / `PageDown` | Move by one page |
 
@@ -107,7 +110,7 @@ Use `()` to capture a part of the filename, then reference it with `$1`, `$2`, �
 
 ## Build from Source
 
-**Requirements:** .NET 9 SDK
+**Requirements:** .NET 10 SDK
 
 ```bash
 git clone https://github.com/umineko73/RenText.git
@@ -127,7 +130,7 @@ dotnet publish -c Release -r win-x64 --self-contained false -p:PublishSingleFile
 
 | | |
 |-|-|
-| Language | C# / .NET 9 |
+| Language | C# / .NET 10 |
 | UI Framework | [Avalonia UI](https://avaloniaui.net/) 12 |
 | MVVM | [CommunityToolkit.Mvvm](https://learn.microsoft.com/en-us/dotnet/communitytoolkit/mvvm/) |
 

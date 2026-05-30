@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
+using System.IO;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
@@ -53,6 +54,24 @@ public partial class App : Application
             if (settings.IsMaximized)           mainWindow.WindowState = WindowState.Maximized;
 
             desktop.MainWindow = mainWindow;
+
+            // 起動時に開くパスを決定：引数 > 前回パス（どちらも存在しないディレクトリなら開かない）
+            var argPath = desktop.Args is { Length: > 0 } args ? args[0] : null;
+            var startupPath =
+                argPath != null && Directory.Exists(argPath)         ? argPath :
+                !string.IsNullOrEmpty(settings.LastOpenedPath) &&
+                    Directory.Exists(settings.LastOpenedPath)        ? settings.LastOpenedPath :
+                null;
+
+            if (startupPath != null && mainWindow.DataContext is MainWindowViewModel vm)
+            {
+                mainWindow.Opened += async (_, _) =>
+                {
+                    vm.CurrentPath = startupPath;
+                    await vm.LoadFolderAsync(startupPath);
+                    await vm.ExpandTreeToPath(startupPath);
+                };
+            }
         }
 
         base.OnFrameworkInitializationCompleted();

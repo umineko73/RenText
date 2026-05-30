@@ -25,4 +25,5 @@ public class AppSettings
     public bool    IsMaximized    { get; set; }
     public double? TreePaneWidth  { get; set; }
     public double? PreviewPaneWidth { get; set; }
+    public string? LastOpenedPath   { get; set; }
 }

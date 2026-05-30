@@ -7,6 +7,12 @@
 
 ## [Unreleased]
 
+## [0.1.3] - 2026-05-31
+
+### 追加
+- 最後に開いたフォルダを `settings.json` に保存し、次回起動時に自動復元（フォルダツリーも展開・選択される）
+- コマンドライン引数対応 — 第1引数にフォルダパスを渡すと、そのフォルダを開いて起動（前回パスより優先）
+
 ## [0.1.2] - 2026-05-24
 
 ### 追加
@@ -72,11 +78,12 @@
 - テーマと言語設定の永続化（`settings.json`）
 
 #### 配布
-- Windows x64 シングルファイルビルド（framework-dependent）— [.NET 9 Desktop Runtime](https://dotnet.microsoft.com/download/dotnet/9.0) が必要
+- Windows x64 シングルファイルビルド（framework-dependent）— [.NET 10 Desktop Runtime](https://dotnet.microsoft.com/download/dotnet/10.0) が必要
 
 ---
 
-[Unreleased]: https://github.com/umineko73/RenText/compare/v0.1.2...HEAD
+[Unreleased]: https://github.com/umineko73/RenText/compare/v0.1.3...HEAD
+[0.1.3]: https://github.com/umineko73/RenText/compare/v0.1.2...v0.1.3
 [0.1.2]: https://github.com/umineko73/RenText/compare/v0.1.1...v0.1.2
 [0.1.1]: https://github.com/umineko73/RenText/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/umineko73/RenText/releases/tag/v0.1.0
